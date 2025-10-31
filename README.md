@@ -370,7 +370,7 @@ Parameters:
 - `title` (required): Changelog title
 - `htmlContent`: HTML content of the changelog (use this OR markdownContent)
 - `markdownContent`: Markdown content of the changelog (use this OR htmlContent)
-- `categories`: Array of category identifiers
+- `changelogCategories`: Array of category identifiers
 
 #### `update_changelog`
 Update an existing changelog.
@@ -380,7 +380,7 @@ Parameters:
 - `title`: New title
 - `htmlContent`: New HTML content
 - `markdownContent`: New markdown content
-- `categories`: New categories (array)
+- `changelogCategories`: New categories (array)
 - `state`: Change state to "draft" or "live"
 
 #### `delete_changelog`

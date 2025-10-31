@@ -253,7 +253,7 @@ class FeaturebaseAPI {
     title: string;
     htmlContent?: string;
     markdownContent?: string;
-    categories?: string[];
+    changelogCategories?: string[];
   }) {
     return this.request<any>("/changelog", {
       method: "POST",
@@ -266,7 +266,7 @@ class FeaturebaseAPI {
     title?: string;
     htmlContent?: string;
     markdownContent?: string;
-    categories?: string[];
+    changelogCategories?: string[];
     state?: "draft" | "live";
   }) {
     return this.request<any>("/changelog", {
@@ -746,7 +746,7 @@ class FeaturebaseMCPServer {
                 type: "string",
                 description: "Markdown content of the changelog (use this OR htmlContent)",
               },
-              categories: {
+              changelogCategories: {
                 type: "array",
                 items: { type: "string" },
                 description: "Array of category identifiers",
@@ -771,7 +771,7 @@ class FeaturebaseMCPServer {
                 type: "string",
                 description: "New markdown content",
               },
-              categories: {
+              changelogCategories: {
                 type: "array",
                 items: { type: "string" },
                 description: "New categories",
