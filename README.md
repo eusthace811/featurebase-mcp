@@ -393,15 +393,19 @@ Publish a changelog and optionally send email notifications to subscribers.
 Parameters:
 - `id` (required): Changelog ID to publish
 - `sendEmail` (required): Whether to send email notification to subscribers
-- `locales`: Array of locales to publish to (empty array = all locales)
+- `locales`: Array of locales to publish to (defaults to empty array = all locales if not specified)
 - `scheduledDate`: Future date to schedule publication (ISO 8601 format)
+
+**Note**: The `locales` parameter is optional. If not provided, the changelog will be published to all locales by default.
 
 #### `unpublish_changelog`
 Unpublish a changelog (change state from live to draft).
 
 Parameters:
 - `id` (required): Changelog ID to unpublish
-- `locales`: Array of locales to unpublish from (empty array = all locales)
+- `locales`: Array of locales to unpublish from (defaults to empty array = all locales if not specified)
+
+**Note**: The `locales` parameter is optional. If not provided, the changelog will be unpublished from all locales by default.
 
 #### `delete_changelog`
 Delete a changelog permanently.

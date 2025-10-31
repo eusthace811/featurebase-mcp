@@ -280,9 +280,17 @@ class FeaturebaseAPI {
     locales?: string[];
     scheduledDate?: string;
   }) {
+    const requestData: any = {
+      id: data.id,
+      sendEmail: data.sendEmail,
+      locales: data.locales ?? [],
+    };
+    if (data.scheduledDate !== undefined) {
+      requestData.scheduledDate = data.scheduledDate;
+    }
     return this.request<any>("/changelog/publish", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(requestData),
     });
   }
 
@@ -290,9 +298,13 @@ class FeaturebaseAPI {
     id: string;
     locales?: string[];
   }) {
+    const requestData = {
+      id: data.id,
+      locales: data.locales ?? [],
+    };
     return this.request<any>("/changelog/unpublish", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(requestData),
     });
   }
 

@@ -153,15 +153,27 @@ class FeaturebaseAPI {
         });
     }
     async publishChangelog(data) {
+        const requestData = {
+            id: data.id,
+            sendEmail: data.sendEmail,
+            locales: data.locales ?? [],
+        };
+        if (data.scheduledDate !== undefined) {
+            requestData.scheduledDate = data.scheduledDate;
+        }
         return this.request("/changelog/publish", {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify(requestData),
         });
     }
     async unpublishChangelog(data) {
+        const requestData = {
+            id: data.id,
+            locales: data.locales ?? [],
+        };
         return this.request("/changelog/unpublish", {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify(requestData),
         });
     }
     async deleteChangelog(id) {
