@@ -7,7 +7,8 @@
         "github:eusthace811/featurebase-mcp"
       ],
       "env": {
-        "FEATUREBASE_API_KEY": "your-api-key-here"
+        "FEATUREBASE_API_KEY": "your-api-key-here",
+        "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
       }
     }
   }

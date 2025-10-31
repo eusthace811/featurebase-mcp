@@ -1,8 +1,8 @@
 # Featurebase MCP Server
 
-[![smithery badge](https://smithery.ai/badge/@marcinwyszynski/featurebase-mcp)](https://smithery.ai/server/@marcinwyszynski/featurebase-mcp)
+[![smithery badge](https://smithery.ai/badge/@eusthace811/featurebase-mcp)](https://smithery.ai/server/@eusthace811/featurebase-mcp)
 
-A Model Context Protocol (MCP) server that provides access to the Featurebase API for managing posts and comments.
+A Model Context Protocol (MCP) server that provides access to the Featurebase API for managing posts, comments, and changelogs. Built with native Node.js 22+ fetch API for optimal performance and minimal dependencies.
 
 ## Features
 
@@ -13,6 +13,8 @@ A Model Context Protocol (MCP) server that provides access to the Featurebase AP
   - Delete posts
   - Get post upvoters
   - Add upvoters to posts
+  - Resolve post slugs
+  - Find similar submissions
 
 - **Comments Management**
   - Get comments for posts/changelogs
@@ -20,14 +22,28 @@ A Model Context Protocol (MCP) server that provides access to the Featurebase AP
   - Update comments
   - Delete comments
 
+- **Changelogs Management**
+  - List changelogs with filtering (draft/live)
+  - Create new changelogs (HTML or Markdown)
+  - Update existing changelogs
+  - Delete changelogs
+  - Manage changelog subscribers
+  - Add/remove subscribers
+
 ## Installation
 
-### From Smithery (Recommended)
+### From GitHub (Recommended)
 
-Once published to Smithery, users can install the server easily:
+Use npx to run directly from GitHub:
 
 ```bash
-npx featurebase-mcp
+npx -y github:eusthace811/featurebase-mcp
+```
+
+### From npm (Once Published)
+
+```bash
+npx -y featurebase-mcp
 ```
 
 Or install globally:
@@ -39,10 +55,10 @@ npm install -g featurebase-mcp
 ### From Source
 
 ```bash
-git clone https://github.com/marcinwyszynski/featurebase-mcp.git
+git clone https://github.com/eusthace811/featurebase-mcp.git
 cd featurebase-mcp
-npm install
-npm run build
+pnpm install
+pnpm build
 ```
 
 ## Usage
@@ -54,14 +70,31 @@ Add this server to your Claude Desktop configuration file:
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-#### Using npx (Recommended)
+#### Using npx with GitHub (Recommended)
 
 ```json
 {
   "mcpServers": {
     "featurebase": {
       "command": "npx",
-      "args": ["featurebase-mcp"],
+      "args": ["-y", "github:eusthace811/featurebase-mcp"],
+      "env": {
+        "FEATUREBASE_API_KEY": "your-api-key-here",
+        "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
+      }
+    }
+  }
+}
+```
+
+#### Using npx with npm (Once Published)
+
+```json
+{
+  "mcpServers": {
+    "featurebase": {
+      "command": "npx",
+      "args": ["-y", "featurebase-mcp"],
       "env": {
         "FEATUREBASE_API_KEY": "your-api-key-here",
         "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
@@ -261,18 +294,85 @@ Delete a comment (soft delete if it has replies).
 Parameters:
 - `id` (required): Comment ID to delete
 
+### Changelogs
+
+#### `list_changelogs`
+List changelogs with optional filtering.
+
+Parameters:
+- `id`: Find specific changelog by ID
+- `q`: Search changelogs by title or content
+- `category`: Filter by category names (array)
+- `state`: Filter by state ("draft" or "live")
+- `limit`: Results per page (max: 100)
+- `page`: Page number
+- `select`: Fields to return (e.g., "id,title" or "title,state,categories")
+
+#### `create_changelog`
+Create a new changelog entry.
+
+Parameters:
+- `title` (required): Changelog title
+- `htmlContent`: HTML content of the changelog (use this OR markdownContent)
+- `markdownContent`: Markdown content of the changelog (use this OR htmlContent)
+- `categories`: Array of category identifiers
+
+#### `update_changelog`
+Update an existing changelog.
+
+Parameters:
+- `id` (required): Changelog ID to update
+- `title`: New title
+- `htmlContent`: New HTML content
+- `markdownContent`: New markdown content
+- `categories`: New categories (array)
+- `state`: Change state to "draft" or "live"
+
+#### `delete_changelog`
+Delete a changelog permanently.
+
+Parameters:
+- `id` (required): Changelog ID to delete
+
+#### `get_changelog_subscribers`
+Get list of changelog subscribers.
+
+Parameters:
+- `limit`: Results per page (default: 10, max: 100)
+- `page`: Page number (default: 1)
+
+#### `add_changelog_subscriber`
+Add a subscriber to changelog updates.
+
+Parameters:
+- `email` (required): Subscriber email
+- `name` (required): Subscriber name
+
+#### `remove_changelog_subscriber`
+Remove a subscriber from changelog updates.
+
+Parameters:
+- `email` (required): Subscriber email to remove
+
 ## Development
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Build TypeScript
-npm run build
+pnpm build
 
 # Run in development mode
-npm run dev
+pnpm dev
 ```
+
+### Technical Details
+
+- **Node.js**: Requires Node.js 22.0.0 or higher
+- **Dependencies**: Built with native fetch API (no axios dependency)
+- **Package Manager**: Uses pnpm for faster, more efficient installs
+- **TypeScript**: Fully typed with TypeScript 5.7+
 
 ## Security
 
