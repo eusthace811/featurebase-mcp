@@ -4,12 +4,10 @@
       "command": "npx",
       "args": [
         "-y",
-        "github:eusthace811/featurebase-mcp"
-      ],
-      "env": {
-        "FEATUREBASE_API_KEY": "your-api-key-here",
-        "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
-      }
+        "github:eusthace811/featurebase-mcp",
+        "--api-key",
+        "your-api-key-here"
+      ]
     }
   }
 }

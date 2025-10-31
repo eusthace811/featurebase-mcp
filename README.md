@@ -77,11 +77,32 @@ Add this server to your Claude Desktop configuration file:
   "mcpServers": {
     "featurebase": {
       "command": "npx",
-      "args": ["-y", "github:eusthace811/featurebase-mcp"],
-      "env": {
-        "FEATUREBASE_API_KEY": "your-api-key-here",
-        "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
-      }
+      "args": [
+        "-y",
+        "github:eusthace811/featurebase-mcp",
+        "--api-key",
+        "your-api-key-here"
+      ]
+    }
+  }
+}
+```
+
+Optional: Add `--org-url` if you need slug resolution:
+
+```json
+{
+  "mcpServers": {
+    "featurebase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:eusthace811/featurebase-mcp",
+        "--api-key",
+        "your-api-key-here",
+        "--org-url",
+        "https://your-org.featurebase.app"
+      ]
     }
   }
 }
@@ -94,11 +115,12 @@ Add this server to your Claude Desktop configuration file:
   "mcpServers": {
     "featurebase": {
       "command": "npx",
-      "args": ["-y", "featurebase-mcp"],
-      "env": {
-        "FEATUREBASE_API_KEY": "your-api-key-here",
-        "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
-      }
+      "args": [
+        "-y",
+        "featurebase-mcp",
+        "--api-key",
+        "your-api-key-here"
+      ]
     }
   }
 }
@@ -111,10 +133,10 @@ Add this server to your Claude Desktop configuration file:
   "mcpServers": {
     "featurebase": {
       "command": "featurebase-mcp",
-      "env": {
-        "FEATUREBASE_API_KEY": "your-api-key-here",
-        "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
-      }
+      "args": [
+        "--api-key",
+        "your-api-key-here"
+      ]
     }
   }
 }
@@ -127,7 +149,26 @@ Add this server to your Claude Desktop configuration file:
   "mcpServers": {
     "featurebase": {
       "command": "node",
-      "args": ["/path/to/featurebase-mcp/build/index.js"],
+      "args": [
+        "/path/to/featurebase-mcp/build/index.js",
+        "--api-key",
+        "your-api-key-here"
+      ]
+    }
+  }
+}
+```
+
+#### Alternative: Using Environment Variables
+
+You can also use environment variables instead of CLI arguments (or in combination):
+
+```json
+{
+  "mcpServers": {
+    "featurebase": {
+      "command": "npx",
+      "args": ["-y", "github:eusthace811/featurebase-mcp"],
       "env": {
         "FEATUREBASE_API_KEY": "your-api-key-here",
         "FEATUREBASE_ORG_URL": "https://your-org.featurebase.app"
@@ -137,6 +178,8 @@ Add this server to your Claude Desktop configuration file:
 }
 ```
 
+**Note**: CLI arguments take precedence over environment variables.
+
 ### Getting Your API Key
 
 1. Log in to your Featurebase account
@@ -144,22 +187,34 @@ Add this server to your Claude Desktop configuration file:
 3. Generate an API key
 4. Keep it secure - never commit it to version control
 
-### Environment Variables
+### Configuration Options
 
-The server requires these environment variables:
+The server can be configured using either CLI arguments (recommended) or environment variables.
 
-#### Required
-- `FEATUREBASE_API_KEY`: Your FeatureBase API key
+#### CLI Arguments (Recommended)
 
-#### Optional  
-- `FEATUREBASE_ORG_URL`: Your organization's FeatureBase URL (e.g., "https://feedback.spacelift.io"). Required only if using `resolve_post_slug` tool.
-- `FEATUREBASE_BASE_URL`: Custom API base URL (defaults to "https://do.featurebase.app/v2")
+- `--api-key`: Your FeatureBase API key (required)
+- `--org-url`: Your organization's FeatureBase URL (e.g., "https://feedback.spacelift.io"). Required only if using `resolve_post_slug` tool.
+- `--base-url`: Custom API base URL (defaults to "https://do.featurebase.app/v2")
+
+Example:
+```bash
+npx -y github:eusthace811/featurebase-mcp --api-key "your-api-key" --org-url "https://your-org.featurebase.app"
+```
+
+#### Environment Variables (Alternative)
+
+- `FEATUREBASE_API_KEY`: Your FeatureBase API key (required if not using `--api-key`)
+- `FEATUREBASE_ORG_URL`: Your organization's FeatureBase URL (optional)
+- `FEATUREBASE_BASE_URL`: Custom API base URL (optional)
 
 You can set them:
 
-1. In your Claude Desktop configuration (recommended)
+1. In your Claude Desktop configuration (see examples above)
 2. Export in your shell: `export FEATUREBASE_API_KEY="your-api-key-here"`
 3. When running the server: `FEATUREBASE_API_KEY="your-api-key-here" npx featurebase-mcp`
+
+**Note**: CLI arguments take precedence over environment variables.
 
 ## Available Tools
 
@@ -376,10 +431,10 @@ pnpm dev
 
 ## Security
 
-- Never hardcode your API key
-- Always use environment variables for API keys
+- Never hardcode your API key in your code
+- Use CLI arguments or environment variables for API keys
 - Keep your API key secure and rotate it regularly
-- The server will not start without a valid `FEATUREBASE_API_KEY` environment variable
+- The server will not start without a valid API key (via `--api-key` argument or `FEATUREBASE_API_KEY` environment variable)
 
 ## Publishing
 

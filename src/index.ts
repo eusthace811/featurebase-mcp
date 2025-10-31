@@ -307,18 +307,44 @@ class FeaturebaseAPI {
   }
 }
 
+/**
+ * Parse command-line arguments
+ */
+function parseArgs(): { apiKey?: string; baseUrl?: string; orgUrl?: string } {
+  const args = process.argv.slice(2);
+  const result: { apiKey?: string; baseUrl?: string; orgUrl?: string } = {};
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--api-key' && i + 1 < args.length) {
+      result.apiKey = args[i + 1];
+      i++;
+    } else if (args[i] === '--base-url' && i + 1 < args.length) {
+      result.baseUrl = args[i + 1];
+      i++;
+    } else if (args[i] === '--org-url' && i + 1 < args.length) {
+      result.orgUrl = args[i + 1];
+      i++;
+    }
+  }
+
+  return result;
+}
+
 class FeaturebaseMCPServer {
   private server: Server;
   private api: FeaturebaseAPI;
 
   constructor() {
-    const apiKey = process.env.FEATUREBASE_API_KEY;
+    // Parse command-line arguments (takes precedence over environment variables)
+    const cliArgs = parseArgs();
+
+    const apiKey = cliArgs.apiKey || process.env.FEATUREBASE_API_KEY;
     if (!apiKey) {
-      throw new Error("FEATUREBASE_API_KEY environment variable is required");
+      throw new Error("API key is required. Provide via --api-key argument or FEATUREBASE_API_KEY environment variable");
     }
 
-    const baseUrl = process.env.FEATUREBASE_BASE_URL;
-    const orgUrl = process.env.FEATUREBASE_ORG_URL;
+    const baseUrl = cliArgs.baseUrl || process.env.FEATUREBASE_BASE_URL;
+    const orgUrl = cliArgs.orgUrl || process.env.FEATUREBASE_ORG_URL;
     this.api = new FeaturebaseAPI({ apiKey, baseUrl, orgUrl });
 
     this.server = new Server(
