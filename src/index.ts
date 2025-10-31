@@ -241,7 +241,7 @@ class FeaturebaseAPI {
   async listChangelogs(params?: {
     id?: string;
     q?: string;
-    category?: string[];
+    categories?: string[];
     state?: "draft" | "live";
     limit?: number;
     page?: number;
@@ -267,10 +267,31 @@ class FeaturebaseAPI {
     htmlContent?: string;
     markdownContent?: string;
     changelogCategories?: string[];
-    state?: "draft" | "live";
   }) {
     return this.request<any>("/changelog", {
       method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async publishChangelog(data: {
+    id: string;
+    sendEmail: boolean;
+    locales?: string[];
+    scheduledDate?: string;
+  }) {
+    return this.request<any>("/changelog/publish", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async unpublishChangelog(data: {
+    id: string;
+    locales?: string[];
+  }) {
+    return this.request<any>("/changelog/unpublish", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
@@ -704,7 +725,7 @@ class FeaturebaseMCPServer {
                 type: "string",
                 description: "Search for changelogs by title or content",
               },
-              category: {
+              categories: {
                 type: "array",
                 items: { type: "string" },
                 description: "Filter changelogs by category names",
@@ -757,7 +778,7 @@ class FeaturebaseMCPServer {
         },
         {
           name: "update_changelog",
-          description: "Update an existing changelog",
+          description: "Update an existing changelog (does not change publish state - use publish_changelog or unpublish_changelog for that)",
           inputSchema: {
             type: "object",
             properties: {
@@ -775,11 +796,6 @@ class FeaturebaseMCPServer {
                 type: "array",
                 items: { type: "string" },
                 description: "New categories",
-              },
-              state: {
-                type: "string",
-                enum: ["draft", "live"],
-                description: "Change state to draft or live",
               },
             },
             required: ["id"],
@@ -832,6 +848,46 @@ class FeaturebaseMCPServer {
               email: { type: "string", description: "Subscriber email to remove" },
             },
             required: ["email"],
+          },
+        },
+        {
+          name: "publish_changelog",
+          description: "Publish a changelog and optionally send email notifications to subscribers",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Changelog ID to publish" },
+              sendEmail: {
+                type: "boolean",
+                description: "Whether to send email notification to subscribers",
+              },
+              locales: {
+                type: "array",
+                items: { type: "string" },
+                description: "Array of locales to publish to (empty array = all locales)",
+              },
+              scheduledDate: {
+                type: "string",
+                description: "Future date to schedule publication (ISO 8601 format)",
+              },
+            },
+            required: ["id", "sendEmail"],
+          },
+        },
+        {
+          name: "unpublish_changelog",
+          description: "Unpublish a changelog (change state from live to draft)",
+          inputSchema: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Changelog ID to unpublish" },
+              locales: {
+                type: "array",
+                items: { type: "string" },
+                description: "Array of locales to unpublish from (empty array = all locales)",
+              },
+            },
+            required: ["id"],
           },
         },
       ],
@@ -1143,6 +1199,30 @@ class FeaturebaseMCPServer {
           case "remove_changelog_subscriber": {
             const { email } = args as any;
             const result = await this.api.removeChangelogSubscriber(email);
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(result),
+                },
+              ],
+            };
+          }
+
+          case "publish_changelog": {
+            const result = await this.api.publishChangelog(args as any);
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(result),
+                },
+              ],
+            };
+          }
+
+          case "unpublish_changelog": {
+            const result = await this.api.unpublishChangelog(args as any);
             return {
               content: [
                 {

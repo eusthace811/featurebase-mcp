@@ -26,6 +26,7 @@ A Model Context Protocol (MCP) server that provides access to the Featurebase AP
   - List changelogs with filtering (draft/live)
   - Create new changelogs (HTML or Markdown)
   - Update existing changelogs
+  - Publish/unpublish changelogs with email notifications
   - Delete changelogs
   - Manage changelog subscribers
   - Add/remove subscribers
@@ -357,23 +358,25 @@ List changelogs with optional filtering.
 Parameters:
 - `id`: Find specific changelog by ID
 - `q`: Search changelogs by title or content
-- `category`: Filter by category names (array)
+- `categories`: Filter by category names (array)
 - `state`: Filter by state ("draft" or "live")
 - `limit`: Results per page (max: 100)
 - `page`: Page number
 - `select`: Fields to return (e.g., "id,title" or "title,state,categories")
 
 #### `create_changelog`
-Create a new changelog entry.
+Create a new changelog entry (starts in draft state).
 
 Parameters:
 - `title` (required): Changelog title
 - `htmlContent`: HTML content of the changelog (use this OR markdownContent)
 - `markdownContent`: Markdown content of the changelog (use this OR htmlContent)
-- `changelogCategories`: Array of category identifiers
+- `changelogCategories`: Array of category identifiers (e.g., ["New", "Fixed", "Improved"])
+
+**Note**: Use `changelogCategories` (not `categories`) when creating changelogs.
 
 #### `update_changelog`
-Update an existing changelog.
+Update an existing changelog (does not change publish state).
 
 Parameters:
 - `id` (required): Changelog ID to update
@@ -381,7 +384,24 @@ Parameters:
 - `htmlContent`: New HTML content
 - `markdownContent`: New markdown content
 - `changelogCategories`: New categories (array)
-- `state`: Change state to "draft" or "live"
+
+**Note**: To change publish state, use `publish_changelog` or `unpublish_changelog` tools.
+
+#### `publish_changelog`
+Publish a changelog and optionally send email notifications to subscribers.
+
+Parameters:
+- `id` (required): Changelog ID to publish
+- `sendEmail` (required): Whether to send email notification to subscribers
+- `locales`: Array of locales to publish to (empty array = all locales)
+- `scheduledDate`: Future date to schedule publication (ISO 8601 format)
+
+#### `unpublish_changelog`
+Unpublish a changelog (change state from live to draft).
+
+Parameters:
+- `id` (required): Changelog ID to unpublish
+- `locales`: Array of locales to unpublish from (empty array = all locales)
 
 #### `delete_changelog`
 Delete a changelog permanently.
