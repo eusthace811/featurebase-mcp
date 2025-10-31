@@ -1,0 +1,54 @@
+{
+  "name": "featurebase-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Featurebase API",
+  "main": "build/index.js",
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "bin": {
+    "featurebase-mcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "featurebase",
+    "api",
+    "feedback",
+    "product-management",
+    "changelogs"
+  ],
+  "author": "Corin Eusthace <eusthace@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eusthace811/featurebase-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eusthace811/featurebase-mcp/issues"
+  },
+  "homepage": "https://github.com/eusthace811/featurebase-mcp#readme",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "files": [
+    "build/",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "json-mask": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/json-mask": "^2.0.3",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

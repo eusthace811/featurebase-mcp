@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "featurebase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:yourusername/featurebase-mcp"
+      ],
+      "env": {
+        "FEATUREBASE_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
