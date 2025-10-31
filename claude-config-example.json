@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "github:yourusername/featurebase-mcp"
+        "github:eusthace811/featurebase-mcp"
       ],
       "env": {
         "FEATUREBASE_API_KEY": "your-api-key-here"
